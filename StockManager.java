@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Manage the stock in a business.
@@ -26,7 +27,15 @@ public class StockManager
      */
     public void addProduct(Product item)
     {
-        stock.add(item);
+        if(findProduct(item.getID())== null)        
+        {
+           stock.add(item); 
+        }
+        else
+        {
+            System.out.println("There is already a product with that ID");
+        }
+        
     }
     
     /**
@@ -37,6 +46,15 @@ public class StockManager
      */
     public void delivery(int id, int amount)
     {
+        Product product = findProduct(id);
+        if (product!= null)
+        {             
+            product.increaseQuantity(amount);              
+        }      
+        else
+        {
+            System.out.println("There is not any product with that ID");
+        }
     }
     
     /**
@@ -46,7 +64,23 @@ public class StockManager
      */
     public Product findProduct(int id)
     {
-        return null;
+        Iterator<Product> it = stock.iterator();  
+        boolean found = false; //false=not found
+        Product product = null;
+        while(it.hasNext() && !found)
+        {
+            product = it.next();
+            if(product.getID() == id )
+            {
+               found=true;                   
+            }
+        }
+        
+        if (!found)
+        {
+            product = null;
+        }
+        return product;
     }
     
     /**
@@ -58,13 +92,63 @@ public class StockManager
      */
     public int numberInStock(int id)
     {
-        return 0;
+        Product product = findProduct(id);
+        int quantity = 0;
+        if (product!=null)
+        {
+            quantity=product.getQuantity();
+        }                      
+        return quantity;
     }
-
+    
+    /**
+     * Print all details of products with less quantity than the amount given.
+     * @amount amount given.
+     */
+    public void lowStock(int amount)
+    {
+         for (Product product: stock)
+        {
+            if (product.getID()<amount)
+            {
+                System.out.println(product.toString());
+            }
+        }
+    }
+    /**
+     *  Try to find a product in the stock with the given name.
+     * @return The identified product, or null if there is none
+     *  with that name.
+     */
+    public Product findProduct(String name)
+    {
+        Iterator<Product> it = stock.iterator();  
+        boolean found = false; //false=not found
+        Product product = null;
+        while(it.hasNext() && !found)
+        {
+            product = it.next();
+            if(product.getName().equals(name) )
+            {
+               found=true;                   
+            }
+        }
+        
+        if (!found)
+        {
+            product = null;
+        }
+        return product;
+    }
+    
     /**
      * Print details of all the products.
      */
     public void printProductDetails()
     {
+        for (Product product: stock)
+        {
+            System.out.println(product.toString());
+        }
     }
 }
